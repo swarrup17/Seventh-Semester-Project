@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Project</title>
+  <style>
+    body {
+      background-color: #12121b;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: white;
+    }
+
+    .about-project, .contact-us {
+      border: 1px solid #8b5cf6;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      background-color: #1e1e2f;
+      color: white;
+      animation: purpleGlow 2s infinite;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #8b5cf6;
+    }
+
+    .info-card {
+      padding: 10px;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      background-color: #282843;
+      box-shadow: 0 4px 6px rgba(139, 92, 246, 0.5);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 10px;
+    }
+
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 10px rgba(139, 92, 246, 0.7);
+    }
+
+    a {
+      color: #8b5cf6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Back Button */
+    .back-btn {
+      display: inline-block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background-color: #8b5cf6;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 6px rgba(139, 92, 246, 0.5);
+    }
+
+    .back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(139, 92, 246, 0.8);
+    }
+
+    @keyframes purpleGlow {
+      0% {
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
+                    0 0 20px rgba(139, 92, 246, 0.6),
+                    0 0 30px rgba(139, 92, 246, 0.7);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.6),
+                    0 0 30px rgba(139, 92, 246, 0.7),
+                    0 0 40px rgba(139, 92, 246, 0.8);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
+                    0 0 20px rgba(139, 92, 246, 0.6),
+                    0 0 30px rgba(139, 92, 246, 0.7);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- About Project Section -->
+  <div class="about-project">
+    <h2>About My Project</h2>
+    <div class="info-card">
+      <p>This project is build by Swarup Dahal for seventh semester project.
+         This project is designed to manage activities efficiently by combining modern UI design with powerful backend integration. 
+         It ensures real-time updates, secure data handling, and an engaging user experience.
+      </p>
+      <p>
+        Supervisor: Dinesh Khadka
+        <p>
+            Dines sir helped me and guided me a lot to complete this project.
+        </p>
+      </p>
+    </div>
+
+    <h2>Technology Stack</h2>
+    <div class="info-card">
+      <ul>
+        <li>Frontend: HTML, CSS, JavaScript</li>
+        <li>Backend: Python (Flask)</li>
+        <li>Database: MySQL / PostgreSQL</li>
+        <li>Other: Bootstrap, AJAX</li>
+      </ul>
+    </div>
+
+    <h2>Project Goals</h2>
+    <div class="info-card">
+      <ul>
+        <li>Provide a user-friendly interface</li>
+        <li>Ensure real-time updates and tracking</li>
+        <li>Secure and scalable design</li>
+        <li>Deliver insightful data visualization</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contact Us Section -->
+  <div class="contact-us">
+    <h2>Contact Us</h2>
+    <div class="info-card">
+      <p><strong>Email:</strong> swarupdahal17@gmail.com</p>
+      <p><strong>Phone:</strong> +977-9748377307</p>
+      <p><strong>Address:</strong> Kathmandu, Nepal</p>
+      <p><strong>GitHub:</strong> <a href="https://github.com/swarrup17" target="_blank">github.com/swarrup17</a></p>
+      <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/swarup-dahal-b9a65225a/" target="_blank">linkedin.com/in/swarupdahal</a></p>
+    </div>
+  </div>
+
+  <a href="{{ url_for('index') }}" 
+   style="margin:20px auto;display:block;width:fit-content;
+          padding:10px 20px;background:#8b5cf6;color:white;
+          text-decoration:none;border-radius:8px;">
+  ⬅ Back to Home
+</a>
+</body>
+</html>

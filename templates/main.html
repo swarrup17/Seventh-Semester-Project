@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>main page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link:hover {
+            color: orange !important;
+        }
+        .nav-link.btn {
+            border-radius: 5px;
+        }
+        .modal-body {
+            text-align: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            color: #000;
+        }
+        .modal-content.dark {
+            background-color: #000;
+            color: #fff;
+        }
+        #suggestions {
+            border: 1px solid #ddd;
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            background-color: white;
+            width: 100%;
+            z-index: 1000;
+            display: none;
+        }
+        #suggestions div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        #suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'heads.html' %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="index">Hamro Pasal</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="index"><i class="fas fa-home"></i> Home</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0 mr-auto" action="/search" method="GET">
+      <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <ul class="navbar-nav">
+      {% if session.get('logged_in') %}
+          <li class="nav-item">
+             <a class="nav-link btn btn-outline-danger" href="/logout">Logout</a>
+          </li>
+      {% else %}
+          <li class="nav-item">
+              <a class="nav-link btn btn-outline-primary mr-2" href="#" data-toggle="modal" data-target="#signupModal">Sign Up</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link btn btn-primary" href="#" data-toggle="modal" data-target="#signinModal">Sign In</a>
+          </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<!-- Search Bar -->
+<div class="container mt-3">
+    <form action="/recommendations" method="post" style="display:flex; position:relative;">
+        <input type="text" id="searchBar" class="form-control mr-2" name="prod" placeholder="Search for products..." autocomplete="off" oninput="showSuggestions()">
+        <div id="suggestions"></div>
+        <input type="number" class="form-control ml-2" name="nbr" placeholder="Number of products..." style="width:100px;">
+        <button class="btn btn-primary ml-2">Search</button>
+    </form>
+</div>
+
+{% if message %}
+<h5 style="margin-left:42%;margin-top:10px; font-weight:bold;">{{message}}</h5>
+{% endif %}
+
+{% if content_based_rec is not none and not content_based_rec.empty %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Recommended Products</h2>
+  <div class="row mt-4">
+    {% for index, product in content_based_rec.iterrows() %}
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+      <div class="card">
+          <img src="{{ product['ImageURL'].split('|')[0].strip() }}"
+               class="card-img-top"
+               alt="{{ product['Name'] }}"
+               style="height: 200px;"
+               data-alt="{{ product['ImageURL'].split('|')[1].strip() if '|' in product['ImageURL'] else 'static/img/img_1.jpg' }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ truncate(product['Name'],12) }}</h5>
+          <p class="card-text">Brand: {{ product['Brand'] }}</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal{{ index }}">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="productModal{{ index }}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ product['Name'] }}</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-4">
+                  <img src="{{ product['ImageURL'].split('|')[0].strip() }}"
+                       class="img-fluid"
+                       alt="{{ product['Name'] }}"
+                       style="height: 200px;"
+                       data-alt="{{ product['ImageURL'].split('|')[1].strip() if '|' in product['ImageURL'] else 'static/img/img_1.jpg' }}">
+              </div>
+              <div class="col-md-8">
+                  <p><strong>Brand:</strong> {{ product['Brand'] }}</p>
+                  <p><strong>Review Count:</strong> {{ product['ReviewCount'] }}</p>
+                  <p><strong>Rating:</strong> {{ product['Rating'] }}</p>
+                  <p><strong>Price:</strong> {{ random_price }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% include 'foots.html' %}
+
+<script>
+function showSuggestions() {
+    var query = document.getElementById('searchBar').value;
+    if (query.length >= 1) {
+        fetch(`/suggestions?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                let suggestionsDiv = document.getElementById('suggestions');
+                suggestionsDiv.innerHTML = '';
+                if (data.suggestions.length > 0) {
+                    data.suggestions.forEach(function(suggestion) {
+                        let div = document.createElement('div');
+                        div.textContent = suggestion;
+                        div.addEventListener('click', function() {
+                            document.getElementById('searchBar').value = suggestion;
+                            suggestionsDiv.innerHTML = '';
+                            suggestionsDiv.style.display = 'none';
+                        });
+                        suggestionsDiv.appendChild(div);
+                    });
+                    suggestionsDiv.style.display = 'block';
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+    } else {
+        document.getElementById('suggestions').style.display = 'none';
+    }
+}
+
+// Fix broken images
+document.querySelectorAll('img[data-alt]').forEach(img => {
+    img.onerror = function() {
+        img.src = img.dataset.alt;
+    };
+});
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

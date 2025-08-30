@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e2f;
+    color: white;
+}
+
+.products-container {
+    display: flex;
+    gap: 20px;
+}
+
+.product-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 83%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.card {
+    height: 300px;
+    width: 250px;
+    padding: 15px;
+    border: 1px solid #3b3b4f;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #282843;
+    color: white;
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.5);
+}
+
+.image {
+    margin: 10px 0;
+}
+
+.image img {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: auto;
+}
+
+.buttons button {
+    padding: 8px 12px;
+    border: 1px solid;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+
+}
+
+.edit {
+    background-color: #8b5cf6;
+}
+
+.edit:hover {
+    background-color: #a78bfa;
+}
+
+.delete {
+    background-color: #e57373;
+}
+
+.delete:hover {
+    background-color: #ff7f7f;
+}
+
+    </style>
+</head>
+<body>
+{% include 'admin/adminheader.html' %}
+    <div class="products-container">
+        {% include 'admin/adminsidebar.html' %}
+        <div class="product-items">
+            {% if result  %}
+                {% for data in result %}
+                    <div class="card">
+                       <p>
+                        {{data.pname}}
+                       </p>
+
+                         <div class="image">
+                             <img src="{{data.imageurl.split('|')[0].strip()}}" alt="{{data.pname}}" height="150px" width="150px">
+                        </div>
+                        <div class="buttons">
+                            <form action="editproduct" method="post">
+                                <input type="hidden" name="productname" value="{{data.pname}}">
+                                <input type="hidden" name="productid" value="{{data.pid}}">
+                                <button type="submit" class="edit"><i class="fa-solid fa-pen"></i></button>
+                            </form>
+                            <form action="delete" method="post">
+                                <input type="hidden" name="productname" value="{{data.pname}}">
+                                <input type="hidden" name="productid" value="{{data.pid}}">
+                                <button type="submit" class="delete"> <i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+             {% endfor %}
+            {% endif %}
+            {% if result2 %}
+                {% for value in result2 %}
+                     <div class="card">
+                            {{value.productname}}
+                         <div class="image">
+                            <img src="{{value.imageurl.split('|')[0].strip()}}" alt="{{value.pname}}" height="150px" width="150px">
+                         </div>
+                        <div class="buttons">
+                            <form action="editproduct" method="post">
+                                <input type="hidden" name="productname" value="{{value.productname}}">
+                                <input type="hidden" name="productid" value="{{value.productId}}">
+                                <button type="submit" class="edit"><i class="fa-solid fa-pen"></i></button>
+                            </form>
+                            <form action="delete" method="post">
+                                <input type="hidden" name="productid" value="{{value.productId}}">
+                                <input type="hidden" name="productname" value="{{value.productname}}">
+                                <button type="submit" class="delete"> <i class="fa-solid fa-trash"></i></button>
+
+                             </form>
+                         </div>
+                     </div>
+                {% endfor %}
+            {%endif %}
+        </div>
+    </div>
+ {% include './admin/backlink.html' %}
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+body{
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+    color: white;
+            }
+         .sidebar{
+
+              width:15%;
+              font-size:1.8rem;
+              padding-left:30px;
+        }
+        .sidebar a{
+             text-decoration:none;
+             color:black
+        }
+        .information{
+            width:85%;
+            font-size:1.8rem;
+        }
+        .form-item{
+        display:flex;
+        justify-content:space-around;
+        flex-direction:column;
+        margin-left:100px;
+        }
+        .user-display{
+            margin-left:300px;
+            border:1px solid black;
+            border-radius:8px;
+            width:500px;
+            text-align:center;
+            margin-top:10px;
+            height:70vh;
+            display:flex;
+            flex-direction:column;
+            justify-content: space-between;
+             box-shadow: 0 4px 8px rgba(139, 92, 246, 0.5);
+        }
+
+        form  input{
+            margin: 20px;
+        }
+
+        .adminuser-container{
+          display:flex;
+        }
+        .each{
+        width:250px;
+        display:flex;
+        justify-content:space-between;
+        }
+        .deactivate{
+            padding:4px;
+            border-radius:4px;
+            background-color: #e57373;
+        }
+        .deactivate:hover{
+            background-color: #ff7f7f;
+            transition:0.2s;
+        }
+    </style>
+</head>
+<body>
+
+   {% include './admin/adminheader.html' %}
+<div class="adminuser-container">
+        {%include './admin/adminsidebar.html' %}
+    <div class="user-display">
+
+                  <h2 style="margin-top:10px;">USERS &nbsp <i class="fa-solid fa-people-group"></i></h2>
+            <div style="height:2px;  background-color: #8b5cf6;width:80%;margin: 0 auto;"></div>
+         {% if users %}
+            {% for user in users %}
+              <div class="form-item" >
+                  <form action="/removeuser" class="each" method="post">
+                      <input type="hidden" name="userid" value="{{user.id}}" style="margin-bottom:20px;">
+                      <input type="hidden" name="username" value="{{user.username}}" style="margin-bottom:20px;">
+                           <strong>
+                                {{user.username}}
+                           </strong>
+
+                            <button type="submit" class="deactivate">Deactivate</button>
+                  </form>
+                  <br>
+
+
+              </div>
+
+            {% endfor %}
+        {% else %}
+            <p>User not present</p>
+       {% endif %}
+    </div>
+<!-- {% include './admin/backlink.html' %}-->
+</div>
+
+
+</body>
+</html>

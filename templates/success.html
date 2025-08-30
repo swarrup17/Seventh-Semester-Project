@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Purchase Success</title>
+    <style>
+        .purchase {
+            margin-left: 30%;
+            display: flex;
+        }
+        .purchase-img {
+            margin-right: 30px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        .button-link {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            width: 120px;
+            margin-left: 30px;
+            top: 20vh;
+        }
+        .button-link button {
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .button-link a:hover {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    {% include 'heads.html' %}
+
+    {% if esewa_info %}
+        <div class="purchase">
+            <div class="purchase-img">
+                <img src="{{ esewa_info.image }}" alt="{{ esewa_info.pname }}" height="300" width="200">
+            </div>
+            <div class="purchase-info">
+                <h1>Thank You For Your Purchase!</h1>
+                <p><strong>Id:</strong> {{ esewa_info.pid }}</p>
+                <p><strong>Name:</strong> {{ esewa_info.pname }}</p>
+                <p><strong>Quantity:</strong> {{ esewa_info.quantity }}</p>
+                <p><strong>Price:</strong> Rs {{ esewa_info.price }}</p>
+            </div>
+        </div>
+
+        <div class="button-link">
+            <button><a href="{{ url_for('index') }}">Back to Products</a></button>
+            <button><a href="{{ url_for('cart') }}">Cart</a></button>
+           
+        </div>
+    {% else %}
+        <p>No purchase information available. Please try again.</p>
+    {% endif %}
+
+    {% include 'foots.html' %}
+</body>
+</html>

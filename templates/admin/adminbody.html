@@ -1,0 +1,95 @@
+
+    <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    width: 80vw;
+}
+
+.information {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 150px;
+    max-width: 80%;
+    margin-right: 300px;
+}
+
+.users, .products, .purchases, .spent {
+    border-radius: 8px;
+    padding: 20px;
+    width: 30%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    background-color: #1e1e2f;
+    color: white;
+    border: 1px solid #8b5cf6;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.users:hover, .products:hover, .purchases:hover, .spent:hover {
+    transform: translateY(-5px);
+    background-color: #3b82f6;
+}
+
+.font-info {
+    margin-top: 20px;
+    font-size: 1.5rem;
+}
+
+</style>
+
+
+
+<div class="body">
+        <div class="information">
+            <div class="users">
+                Total Users
+                <div class="font-info">
+                    <i class="fa-solid fa-user"></i> &nbsp:
+                 {% for x in user %}
+                    {{x}}
+                {% endfor %}
+                </div>
+
+            </div>
+            <div class="products">
+                Total Products
+                <div class="font-info">
+                <i class="fas fa-boxes"></i>&nbsp:
+                     {% if product %}
+                    {{product}}
+                {% endif %}
+                </div>
+
+            </div>
+            <div class="purchases">
+                Total Purchases
+                <div class="font-info">
+                    <i class="fa-solid fa-cart-shopping"></i> &nbsp:
+                {% for x in totalcount %}
+                    {{x}}
+                {% endfor %}
+                </div>
+
+            </div>
+            <div class="spent">
+                Total MoneySpent
+                <div class="font-info" >
+                    <i class="fa-solid fa-money-bill"></i> &nbsp:
+                    {% if price %}
+                        {{price}}
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>

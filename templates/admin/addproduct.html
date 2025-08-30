@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+             background-color: #1e1e2f;
+    color: white;
+            }
+        .addproduct{
+            display:flex;
+
+        }
+        .forms form{
+            display:flex;
+            flex-direction:column;
+            border:1px solid black;
+            width:500px;
+            padding:30px;
+            border-radius:8px;
+            margin-top:  20px ;
+            margin-left:300px;
+             box-shadow: 0 4px 8px rgba(139, 92, 246, 0.5);
+        }
+        form input{
+            height:20px;
+        }
+        .each{
+            margin-bottom:10px;
+            border-radius:8px;
+
+        }
+        .submit{
+            border-radius:8px;
+            padding:5px;
+            width: 80px !important;
+            margin-left:35%;
+
+        }
+        .submit:hover{
+            background-color:#8b5cf6;
+            color:white;
+            transition:0.7s;
+        }
+    </style>
+</head>
+<body>
+   {% include 'admin/adminheader.html' %}
+
+  {% if message %}
+<h1 id="messages" style="color:red; margin-left:15%; margin-bottom:10px;" >{{message}}</h1>
+{% endif %}
+    <div class="addproduct">
+        {% include 'admin/adminsidebar.html' %}
+        <div class="forms">
+             <form action="/insert"  class="each" method="post">
+             Product ID
+                <input type="text" class="each" name="id">
+            Product Name
+                <input type="text"  class="each" name="name">
+            Review Count
+                <input type="number" class="each" name="reviewcount" min="0"  >
+             Product Brand
+                <input type="text" class="each" name="brand">
+             ImageUrl
+                <input type="text" class="each" name="imageurl">
+             Rating
+                <input type="number" class="each" name="rating" min="0" step="0.5">
+             Description
+                <input type="text"  class="each" name="description">
+             Category
+                <input type="text" class="each" name="category">
+             Price
+                 <input type="number" class="each" name="price" min="100" step="0.5">
+            <button type="submit" class="submit">ADD</button>
+    </form>
+        </div>
+
+    </div>
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+             setTimeout(function() {
+            const messageElement = document.getElementById("messages");
+            if (messageElement) {
+                messageElement.style.display = "none";
+            }
+        }, 2000);
+    });
+</script>
+</html>

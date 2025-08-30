@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+    color: white;
+            }
+        .history{
+            display:flex;
+            gap: 20px;
+            width: 100%;
+
+        }
+        .link a{
+            margin-left:45%;
+            text-decoration:none;
+            color:black;
+            font-size:1.2rem;
+
+        }
+        table{
+            text-align:center;
+            font-size:1.02rem
+        }
+        .purchase{
+            margin-left:100px;
+            margin-top:10px;
+            display:flex;
+            flex-wrap:wrap;
+            gap:20px;
+            width:75%;
+
+
+        }
+        .purchase-info{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+ box-shadow: 0 4px 8px rgba(139, 92, 246, 0.5);
+            flex-direction:column;
+            border:1px solid black;
+            margin-bottom:20px;
+            border-radius:8px;
+            width:450px;
+            padding:20px;
+        }
+    </style>
+</head>
+<body>
+{% include 'admin/adminheader.html' %}
+
+   {% if results %}
+
+<div class="history">
+    {% include 'admin/adminsidebar.html' %}
+   <div class="purchase">
+
+    {% for datas in results%}
+        {% for values in names %}
+            {% if datas.userid == values.id %}
+       <div class="purchase-info">
+          <p>
+              <strong>Username: </strong>  {{values.username}}
+          </p>
+            <p>
+              <strong>User Id: </strong>  {{datas.userid }}
+          </p>
+            <p>
+              <strong>Purchase ID: </strong>  {{datas.purchaseid }}
+          </p>
+             <p>
+              <strong>Product Id: </strong>  {{datas.productid }}
+          </p>
+              <p>
+              <strong>Product Name: </strong>  {{datas.productname }}
+          </p>
+              <p>
+              <strong>Product Quantity: </strong>  {{datas.quantity }}
+              </p>
+           <p>
+                <strong>Total Price:  </strong>  {{datas.productprice }}
+           </p>
+
+             <p>
+              <strong>Purchased on:  </strong>  {{datas.purchaseTime }}
+          </p>
+
+
+        </div>
+            {%endif%}
+        {% endfor %}
+   {% endfor %}
+   {%else%}
+   <h2>data not here</h2>
+{%endif%}
+   </div>
+
+
+</div>
+
+</body>
+</html>

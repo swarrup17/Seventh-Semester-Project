@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .categories {
+            display: flex;
+        }
+
+        .info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .products {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            background: #fff;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .product {
+            cursor: pointer;
+        }
+
+        .products:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: 0.5s ease;
+        }
+
+        li {
+            margin-top: 10px;
+        }
+
+        .detail-button {
+            border: 1px solid #8b5cf6;
+            padding: 8px;
+            border-radius: 8px;
+            color: #8b5cf6;
+            margin-left: 20%;
+            margin-top: 20px;
+            background-color: white;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .detail-button:hover {
+            background-color: #8b5cf6;
+            color: white;
+            text-decoration: none;
+        }
+
+        .cart-button {
+            margin-top: 15px;
+            padding: 8px;
+            border-radius: 4px;
+            width: 3vw;
+            background-color: #ff4081;
+            border: none;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .cart-button:hover {
+            background-color: #e33c70;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    {% include 'heads.html' %}
+    {% include 'signup.html' %}
+    {% include 'signin.html' %}
+
+    <div class="categories">
+        {% include 'categorybutton.html' %}
+        <div class="info">
+            {% if products1 %}
+                {% for product in products1 %}
+                    <div class="products" data-href="{{ url_for('product_detail', pid=product['productId']) }}" onclick="redirectToDetail(this)">
+                        <div class="product">
+                            <h3>{{ product['productname'] }}</h3>
+                            <div>
+                                <img src="{{ product['imageurl'].split('|')[0].strip() }}" alt="{{ product['productname'] }}" height="200px" width="200px">
+                            </div>
+                            <p><strong>Rating:</strong> {{ product['rating'] }}</p>
+                            <p><strong>Category:</strong> {{ product['category'] }}</p>
+                            <p><strong>Price:</strong> Rs {{ product['price'] }}</p>
+                            <form action="/cart" method="post">
+                                <input type="hidden" name="pid" value="{{ product['productId'] }}">
+                                <input type="hidden" name="pname" value="{{ product['productname'] }}">
+                                <input type="hidden" name="image" value="{{ product['imageurl'].split('|')[0].strip() }}">
+                                <input type="hidden" name="price" value="{{ product['price'] }}">
+                                <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {% include 'foots.html' %}
+</body>
+<script>
+    function redirectToDetail(element) {
+        const url = element.getAttribute('data-href');
+        window.location.href = url;
+    }
+</script>
+</html>

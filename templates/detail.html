@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Purchases</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" 
+          integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 20px;
+            gap: 20px;
+        }
+
+        .main {
+            width: 350px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bodyone p {
+            margin: 5px 0;
+        }
+
+        .button-link {
+            margin: 20px;
+        }
+
+        .button-link a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .button-link a:hover {
+            color: #555;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    {% include 'heads.html' %}
+
+    <div class="button-link">
+        <a href="{{ url_for('index') }}">
+            <i class="fa-solid fa-arrow-left"></i> Buy More
+        </a>
+    </div>
+
+    <h2>Your Purchases</h2>
+
+    <div class="container">
+        {% if result %}
+            {% for value in result %}
+                <div class="main">
+                    <div class="bodyone">
+                        <p><strong>Id:</strong> {{ value.productid }}</p>
+                        <p><strong>Product:</strong> {{ value.productname }}</p>
+                        <p><strong>Quantity:</strong> {{ value.quantity }}</p>
+                        <p><strong>Price:</strong> Rs {{ value.productprice }}</p>
+                        <p><strong>Purchased On:</strong> {{ value.purchaseTime }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align:center; font-size:16px;">No Purchase Done</p>
+        {% endif %}
+    </div>
+
+    {% include 'foots.html' %}
+</body>
+</html>

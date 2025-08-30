@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Categories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .categories {
+            display: flex;
+            padding: 20px;
+        }
+
+        .buttons {
+            flex: 0.5;
+            height: auto;
+            border-radius: 8px;
+            margin-right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: sticky;
+            top: 10vh;
+        }
+
+        .buttons button {
+            width: 120px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: left;
+            padding: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: 0.3s;
+        }
+
+        form ul li {
+            margin-bottom: 20px;
+            list-style: none;
+        }
+
+        /* Category Colors */
+        .all {
+            background-color: #6c757d;
+            color: white;
+        }
+        .all:hover {
+            background-color: #5a6268;
+        }
+
+        .personal {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .personal:hover {
+            background-color: #138496;
+        }
+
+        .beauty {
+            background-color: #e83e8c;
+            color: white;
+        }
+        .beauty:hover {
+            background-color: #d63384;
+        }
+
+        .care {
+            background-color: #28a745;
+            color: white;
+        }
+        .care:hover {
+            background-color: #218838;
+        }
+
+        .premium {
+            background-color: #ffc107;
+            color: black;
+        }
+        .premium:hover {
+            background-color: #e0a800;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="buttons">
+        <form action="showinfo" method="POST">
+            <h5>Category</h5>
+            <ul>
+                <li><button type="submit" name="category" value="all" class="all">All</button></li>
+                <li><button type="submit" name="category" value="Cricket" class="Cricket">Cricket</button></li>
+                <li><button type="submit" name="category" value="Football" class="Football">Football</button></li>
+                <li><button type="submit" name="category" value="Jersey" class="Jersey">Jersey</button></li>
+                <li><button type="submit" name="category" value="Basketball" class="Basketball">Basketball</button></li>
+            </ul>
+        </form>
+    </div>
+</body>
+</html>

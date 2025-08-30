@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.pname }} - Product Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .product-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product-detail img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-info {
+            max-width: 600px;
+        }
+        .product-info h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .product-info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            background-color: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background-color: white;
+            color: #8b5cf6;
+            transform: scale(1.05);
+        }
+        .cart-button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            transition: 0.3s;
+        }
+        .cart-button:hover {
+            background-color: #ff80b2;
+            color: black;
+            transform: scale(1.05);
+        }
+        .recommended-products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .recommend-info {
+            width: 20%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .recommend-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+        .card img {
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #8b5cf6;
+        }
+    </style>
+</head>
+<body>
+    {% include 'heads.html' %}
+    {% include 'signup.html' %}
+    {% include 'signin.html' %}
+
+    <div class="container">
+        <div class="product-detail">
+            <div class="product-img">
+                <img src="{{ product['ImageURL'].split('|')[0].strip() }}"
+                     data-alt="{{ product['ImageURL'].split('|')[1].strip() if '|' in product['ImageURL'] else 'static/img/img_1.jpg' }}"
+                     alt="{{ product['Name'] }}">
+            </div>
+            <div class="product-info">
+                <form action="/cart" method="post">
+                    <h3>{{ product['Name'] }}</h3>
+                    <p><strong>Brand:</strong> {{ product['Brand'] }}</p>
+                    <p><strong>Rating:</strong> {{ product['Rating'] }}</p>
+                    <p><strong>Review Count:</strong> {{ product['ReviewCount'] }}</p>
+                    <p><strong>Description:</strong> {{ product['Description'].split('.')[0].strip() }}</p>
+                    <p><strong>Price:</strong> Rs {{ product['Price'] }}</p>
+
+                    <a href="{{ url_for('index') }}" class="back-btn">Home</a>
+                    <input type="hidden" name="pid" value="{{ product.ID }}">
+                    <input type="hidden" name="pname" value="{{ product.Name }}">
+                    <input type="hidden" name="image" value="{{ product['ImageURL'].split('|')[0].strip() }}">
+                    <input type="hidden" name="price" value="{{ product.Price }}">
+                    <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
+                </form>
+            </div>
+        </div>
+
+        {% if recommendations1 %}
+        <h3 class="mt-5 mb-3">Recommended Products</h3>
+        <div class="recommended-products">
+            {% for rec in recommendations1 %}
+            <div class="recommend-info" data-href="{{ url_for('product_detail', pid=rec.ID) }}">
+                <div class="card">
+                    <img src="{{ rec.ImageURL.split('|')[0].strip() }}"
+                         data-alt="{{ rec.ImageURL.split('|')[1].strip() if '|' in rec.ImageURL else 'static/img/img_1.jpg' }}"
+                         alt="{{ rec.Name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ rec.Name }}</h5>
+                        <p><strong>Brand:</strong> {{ rec.Brand }}</p>
+                        <p><strong>Rating:</strong> {{ rec.Rating }}</p>
+                        <p><strong>Price:</strong> Rs {{ rec.Price }}</p>
+
+                        <form action="/cart" method="post">
+                            <input type="hidden" name="pid" value="{{ rec.ID }}">
+                            <input type="hidden" name="pname" value="{{ rec.Name }}">
+                            <input type="hidden" name="image" value="{{ rec.ImageURL.split('|')[0].strip() }}">
+                            <input type="hidden" name="price" value="{{ rec.Price }}">
+                            <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+
+    {% include 'foots.html' %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Redirect on recommended product click
+        document.querySelectorAll('.recommend-info').forEach(el => {
+            el.addEventListener('click', () => {
+                window.location.href = el.dataset.href;
+            });
+        });
+
+        // Fix broken images
+        document.querySelectorAll('img[data-alt]').forEach(img => {
+            img.onerror = function() {
+                img.src = img.dataset.alt;
+            };
+        });
+    </script>
+</body>
+</html>

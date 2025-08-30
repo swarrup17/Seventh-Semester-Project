@@ -1,0 +1,44 @@
+<style>
+   .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 222px;
+    padding: 15px;
+    background-color: #1e1e2f;
+    height: 92vh;
+    box-shadow: 2px 2px 10px rgba(139, 92, 246, 0.5);
+
+}
+
+.sidebar a {
+    color: #8b5cf6;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 12px;
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar a:hover {
+    background: #8b5cf6;
+    color: white;
+}
+
+.sidebar a i {
+    margin-left: 10px;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div class="sidebar">
+            <a href="admin">Dashboard <i class="fa-solid fa-grip"></i></a>
+            <a href="products">Edit   <i class="fa-solid fa-pen fa-sm"></i></a>
+            <a href="/purchase">Purchases <i class="fa-solid fa-money-bills fa-sm"></i></a>
+            <a href="/adminusers">Deactivate User <i class="fa-regular fa-user fa-sm"></i></a>
+            <a href="/adminusersdeactive">Activate User <i class="fa-solid fa-user fa-sm"></i></a>
+            <a href="/addproduct">Add Products <i class="fa-solid fa-cart-plus fa-sm"></i></a>
+            <a href="/category">Categories <i class="fa-solid fa-folder fa-sm"></i></a>
+            <a href="/addcategory">Add Category <i class="fa-solid fa-folder-plus fa-sm"></i></a>
+            <a href="/adminlogout">Logout <i class="fa-solid fa-right-from-bracket"></i></a>
+</div>
