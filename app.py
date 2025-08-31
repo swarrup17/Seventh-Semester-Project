@@ -207,7 +207,7 @@ def cosine_similarity(vector1, vector2):
     return dot_product / (norm1 * norm2)
 
 
-def content_based_recommendations(train_data, item_name, top_n=7):
+def content_based_recommendations(train_data, item_name, top_n=5):
     if item_name not in train_data['Name'].values:
         return pd.DataFrame()
 
