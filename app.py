@@ -9,6 +9,7 @@ import hmac
 import hashlib
 import base64
 
+
 # object of flask
 # built in syntax cannot change
 app = Flask(__name__)
@@ -206,21 +207,41 @@ def cosine_similarity(vector1, vector2):
     return dot_product / (norm1 * norm2)
 
 
-def content_based_recommendations(train_data, item_name, top_n=10):
+def content_based_recommendations(train_data, item_name, top_n=7):
     if item_name not in train_data['Name'].values:
         return pd.DataFrame()
 
     tf_idf_matrix = compute_tf_idf(train_data)
     item_index = train_data[train_data['Name'] == item_name].index[0]
     similarities = []
+
     for i, tf_idf_vector in enumerate(tf_idf_matrix):
         similarity = cosine_similarity(tf_idf_matrix[item_index], tf_idf_vector)
         similarities.append((i, similarity))
+
+    # Sort by similarity score (highest first)
     similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
-    top_similar_indices = [idx for idx, _ in similarities[1:top_n + 1]]
-    recommended_items_details = train_data.iloc[top_similar_indices][
-        ['ID', 'Name', 'ReviewCount', 'Brand', 'ImageURL', 'Rating', 'Price', 'Description']]
-    return recommended_items_details
+
+    # Get top N (excluding the same product at index 0)
+    top_similar_indices = similarities[1:top_n + 1]
+
+    recommended_items_details = []
+    for idx, score in top_similar_indices:
+        row = train_data.iloc[idx]
+        recommended_items_details.append({
+            'ID': row['ID'],
+            'Name': row['Name'],
+            'ReviewCount': row['ReviewCount'],
+            'Brand': row['Brand'],
+            'ImageURL': row['ImageURL'],
+            'Rating': row['Rating'],
+            'Price': row['Price'],
+            'Description': row['Description'],
+            'Similarity': round(score * 100, 2)  # ✅ similarity as percentage
+        })
+
+    return pd.DataFrame(recommended_items_details)
+
 
 
 # ----------------------
@@ -253,15 +274,16 @@ def product_detail(pid):
     product_info = None
     pname = None
 
-    # 1. Check in displayproduct (pid is integer)
+    # 1️⃣ Check displayproduct
     if pid.isdigit():
-        query_display = text("SELECT * FROM displayproduct WHERE pid = :pid")
-        result_display = db.session.execute(query_display, {"pid": int(pid)}).fetchone()
-
+        result_display = db.session.execute(
+            text("SELECT * FROM displayproduct WHERE pid = :pid"),
+            {"pid": int(pid)}
+        ).fetchone()
         if result_display:
             product_info = {
-                'ID': result_display[0],   # pid
-                'Name': result_display[1], # pname
+                'ID': result_display[0],
+                'Name': result_display[1],
                 'ReviewCount': result_display[2],
                 'Brand': result_display[3],
                 'ImageURL': result_display[4],
@@ -271,25 +293,26 @@ def product_detail(pid):
             }
             pname = product_info['Name']
 
-    # 2. If not found, check in products (pid = productId string)
+    # 2️⃣ Check products
     if not product_info:
-        query_product = text("SELECT * FROM products WHERE productId = :pid")
-        result_product = db.session.execute(query_product, {"pid": pid}).fetchone()
-
+        result_product = db.session.execute(
+            text("SELECT * FROM products WHERE productId = :pid"),
+            {"pid": pid}
+        ).fetchone()
         if result_product:
             product_info = {
-                'ID': result_product[1],   # productId
-                'Name': result_product[2], # productname
+                'ID': result_product[1],
+                'Name': result_product[2],
                 'ReviewCount': result_product[3],
                 'Brand': result_product[4],
                 'ImageURL': result_product[5],
                 'Rating': result_product[6],
                 'Description': result_product[7] if len(result_product) > 7 else "No description available.",
-                'Price': result_product[9] if len(result_product) > 11 else None,
+                'Price': result_product[9] if len(result_product) > 9 else None,
             }
             pname = product_info['Name']
 
-    # 3. If still not found, fallback to CSV dataset
+    # 3️⃣ Fallback CSV
     if not product_info:
         result_csv = train_data[train_data['ID'] == (int(pid) if pid.isdigit() else pid)]
         if not result_csv.empty:
@@ -297,33 +320,32 @@ def product_detail(pid):
             product_info = {
                 'ID': row['ID'],
                 'Name': row['Name'],
-                'ReviewCount': row['ReviewCount'],
-                'Brand': row['Brand'],
-                'ImageURL': row['ImageURL'],
-                'Rating': row['Rating'],
-                'Description': row.get('Description', ''),
+                'ReviewCount': row.get('ReviewCount', 0),
+                'Brand': row.get('Brand', ''),
+                'ImageURL': row.get('ImageURL', ''),
+                'Rating': row.get('Rating', 0),
+                'Description': row.get('Description', 'No description available.'),
                 'Price': row.get('Price', None),
             }
             pname = row['Name']
         else:
             return "Product not found", 404
 
-    # 4. Recommendations
-    recommendations1 = content_based_recommendations(train_data, pname, top_n=5)
+    # 4️⃣ Recommendations
+    recommendations = pd.DataFrame()
     message = None
-    if pname not in train_data['Name'].values:
-        message = f"No recommendations available for the product '{pname}' as it is not found in the dataset."
+    if pname:
+        recommendations = content_based_recommendations(train_data, pname, top_n=10)
+        if recommendations.empty:
+            message = f"No recommendations available for '{pname}'."
 
+    # 5️⃣ Render template
     return render_template(
         'product_detail.html',
         product=product_info,
-        recommendations1=recommendations1.to_dict(orient='records'),
+        recommendations1=recommendations.to_dict(orient='records'),
         message=message
     )
-
-    
-
-
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
