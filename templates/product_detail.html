@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.pname }} - Product Detail</title>
+    <title>{{ product['Name'] }} - Product Detail</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -13,85 +13,39 @@
             margin: 0;
             padding: 0;
         }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-        }
-        .product-detail {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+        .container { width: 80%; margin: 20px auto; }
+        .product-detail { display: flex; flex-wrap: wrap; gap: 20px; }
         .product-detail img {
-            width: 300px;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
+            width: 300px; height: 300px;
+            object-fit: cover; border-radius: 8px;
         }
-        .product-info {
-            max-width: 600px;
-        }
-        .product-info h3 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .product-info p {
-            margin: 10px 0;
-            font-size: 16px;
-        }
+        .product-info { max-width: 600px; }
+        .product-info h3 { margin: 0; font-size: 24px; }
+        .product-info p { margin: 10px 0; font-size: 16px; }
         .back-btn {
-            margin-top: 20px;
-            padding: 10px 15px;
-            border-radius: 4px;
-            background-color: #8b5cf6;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
+            margin-top: 20px; padding: 10px 15px; border-radius: 4px;
+            background-color: #8b5cf6; color: white; text-decoration: none; transition: 0.3s;
         }
-        .back-btn:hover {
-            background-color: white;
-            color: #8b5cf6;
-            transform: scale(1.05);
-        }
+        .back-btn:hover { background-color: white; color: #8b5cf6; transform: scale(1.05); }
         .cart-button {
-            margin-top: 15px;
-            padding: 10px 15px;
-            border-radius: 4px;
-            background-color: #ff4081;
-            color: white;
-            border: none;
-            transition: 0.3s;
+            margin-top: 15px; padding: 10px 15px; border-radius: 4px;
+            background-color: #ff4081; color: white; border: none; transition: 0.3s;
         }
-        .cart-button:hover {
-            background-color: #ff80b2;
-            color: black;
-            transform: scale(1.05);
-        }
+        .cart-button:hover { background-color: #ff80b2; color: black; transform: scale(1.05); }
         .recommended-products {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-            gap: 10px;
-            margin-top: 30px;
+            display: flex; flex-wrap: wrap; justify-content: space-evenly; gap: 10px; margin-top: 30px;
         }
         .recommend-info {
-            width: 20%;
-            cursor: pointer;
-            transition: 0.3s;
+            width: 20%; cursor: pointer; transition: 0.3s;
         }
         .recommend-info:hover {
-            transform: translateY(-5px);
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-5px); box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
         }
         .card img {
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 2px solid #8b5cf6;
+            height: 200px; object-fit: cover; border-bottom: 2px solid #8b5cf6;
         }
         .similarity-score {
-            font-size: 14px;
-            font-weight: bold;
-            color: #000000;
+            font-size: 14px; font-weight: bold; color: #000000;
         }
     </style>
 </head>
@@ -108,7 +62,7 @@
                      alt="{{ product['Name'] }}">
             </div>
             <div class="product-info">
-                <form action="/cart" method="post">
+                <form action="{{ url_for('cart') }}" method="post">
                     <h3>{{ product['Name'] }}</h3>
                     <p><strong>Brand:</strong> {{ product['Brand'] }}</p>
                     <p><strong>Rating:</strong> {{ product['Rating'] }}</p>
@@ -117,10 +71,12 @@
                     <p><strong>Price:</strong> Rs {{ product['Price'] }}</p>
 
                     <a href="{{ url_for('index') }}" class="back-btn">Home</a>
-                    <input type="hidden" name="pid" value="{{ product.ID }}">
-                    <input type="hidden" name="pname" value="{{ product.Name }}">
+                    
+                    <!-- ✅ Always use productId -->
+                    <input type="hidden" name="pid" value="{{ product['productId'] }}">
+                    <input type="hidden" name="pname" value="{{ product['Name'] }}">
                     <input type="hidden" name="image" value="{{ product['ImageURL'].split('|')[0].strip() }}">
-                    <input type="hidden" name="price" value="{{ product.Price }}">
+                    <input type="hidden" name="price" value="{{ product['Price'] }}">
                     <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
                 </form>
             </div>
@@ -140,9 +96,10 @@
                         <p><strong>Brand:</strong> {{ rec.Brand }}</p>
                         <p><strong>Rating:</strong> {{ rec.Rating }}</p>
                         <p><strong>Price:</strong> Rs {{ rec.Price }}</p>
-                        <p class="similarity-score">Similarity: {{ rec.Similarity }}%</p> <!-- ✅ New line -->
+                        <p class="similarity-score">Similarity: {{ rec.Similarity }}%</p>
 
-                        <form action="/cart" method="post">
+                        <form action="{{ url_for('cart') }}" method="post">
+                            <!-- ✅ Keep consistent -->
                             <input type="hidden" name="pid" value="{{ rec.ID }}">
                             <input type="hidden" name="pname" value="{{ rec.Name }}">
                             <input type="hidden" name="image" value="{{ rec.ImageURL.split('|')[0].strip() }}">
