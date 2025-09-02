@@ -1,65 +1,173 @@
-{% extends "header.html" %}
-{% block content %}
-
-<section class="p-4">
-    <h2 class="text-2xl font-bold mb-4">Search Results</h2>
-
-    <!-- Search Results -->
-    {% if products %}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {% for product in products %}
-                <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <img src="{{ product.imageurl.split('|')[0].strip() }}" alt="{{ product.productname }}" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold">{{ product.productname }}</h3>
-                        <p class="text-gray-600">Brand: {{ product.productbrand }}</p>
-                        <p class="text-gray-600">Category: {{ product.category }}</p>
-                        <p class="text-gray-800 font-bold">Price: Rs. {{ product.price }}</p>
-
-                        <form action="{{ url_for('cart') }}" method="POST" class="mt-3">
-                            <!-- ✅ always use productId -->
-                            <input type="hidden" name="pid" value="{{ product.productId }}">
-                            <input type="hidden" name="pname" value="{{ product.productname }}">
-                            <input type="hidden" name="image" value="{{ product.imageurl.split('|')[0].strip() }}">
-                            <input type="hidden" name="price" value="{{ product.price }}">
-                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add to Cart</button>
-                        </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No products found matching your search.</p>
-    {% endif %}
-</section>
-
-<!-- Recommendations Section -->
-{% if recommendations %}
-<section class="p-4 mt-8">
-    <h2 class="text-2xl font-bold mb-4">Recommended for You</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {% for rec in recommendations %}
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <img src="{{ rec.ImageURL.split('|')[0].strip() }}" alt="{{ rec.Name }}" class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold">{{ rec.Name }}</h3>
-                    <p class="text-gray-600">Brand: {{ rec.Brand }}</p>
-                    <p class="text-gray-600">Category: {{ rec.Category }}</p>
-                    <p class="text-gray-800 font-bold">Price: Rs. {{ rec.Price }}</p>
-
-                    <form action="{{ url_for('cart') }}" method="POST" class="mt-3">
-                        <!-- ✅ Cast rec.ID to string -->
-                        <input type="hidden" name="pid" value="{{ rec.ID }}">
-                        <input type="hidden" name="pname" value="{{ rec.Name }}">
-                        <input type="hidden" name="image" value="{{ rec.ImageURL.split('|')[0].strip() }}">
-                        <input type="hidden" name="price" value="{{ rec.Price }}">
-                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add to Cart</button>
-                    </form>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .product {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .product-info {
+            margin-left: 20px;
+        }
+        .product-img img {
+            width: 100%;
+            max-width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .back-btn {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: 1px solid #8b5cf6;
+            border-radius: 4px;
+            background-color: #8b5cf6;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            color: #8b5cf6;
+            background-color: white;
+            transform: scale(1.05);
+        }
+        .cart-button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 4px;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            transition: 0.3s;
+        }
+        .cart-button:hover {
+            background-color: #ff80b2;
+            color: black;
+            transform: scale(1.05);
+        }
+        .recommended-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-left: 3.2%;
+        }
+        .recommend-info {
+            width: 20%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .recommend-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        @media (max-width: 768px) {
+            .recommend-info { width: 48%; }
+        }
+        @media (max-width: 480px) {
+            .recommend-info { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+{% include 'heads.html' %}
+<div class="container">
+    <div class="row">
+        {% for product in results %}
+        <div class="product">
+            <div class="product-img">
+                <img src="{{ product['imageurl'].split('|')[0].strip() }}"
+                     data-alt="{{ product['ImageURL'].split('|')[1].strip() if '|' in product['ImageURL'] else 'static/img/img_1.jpg' }}"
+                     alt="{{ product['Name'] }}">
             </div>
+            <div class="product-info">
+                <form action="/cart" method="post">
+                    <h5>{{ product.productname }}</h5>
+                    <p><strong>Brand:</strong> {{ product.productbrand }}</p>
+                    <p><strong>Rating:</strong> {{ product.rating }} stars</p>
+                    <p><strong>Description:</strong> {{ product.description.split('.')[0].strip() }}</p>
+                    <p><strong>Price:</strong> Rs {{ product.price }}</p>
+                    <a href="{{ url_for('index') }}" class="back-btn">Home</a>
+                    <input type="hidden" name="pid" value="{{ product.productid }}">
+                    <input type="hidden" name="pname" value="{{ product.productname }}">
+                    <input type="hidden" name="image" value="{{ product['imageurl'].split('|')[0].strip() }}">
+                    <input type="hidden" name="price" value="{{ product.price }}">
+                    <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
+                </form>
+            </div>
+        </div>
         {% endfor %}
     </div>
-</section>
+</div>
+
+{% if recommendations1 %}
+<h4 style="margin-left:20px;margin-top:20px;">Recommended Products</h4>
+<div class="row recommended-products">
+    {% for rec in recommendations1 %}
+    <div class="recommend-info" data-href="{{ url_for('product_detail', pid=rec.ID) }}">
+        <div class="card">
+            <img src="{{ rec.ImageURL.split('|')[0].strip() }}"
+                 data-alt="{{ rec.ImageURL.split('|')[1].strip() if '|' in rec.ImageURL else 'static/img/img_1.jpg' }}"
+                 alt="{{ rec.Name }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ rec.Name }}</h5>
+                <p><strong>Brand:</strong> {{ rec.Brand }}</p>
+                <p><strong>Rating:</strong> {{ rec.Rating }}</p>
+                <p><strong>Price:</strong> Rs {{ rec.Price }}</p>
+                <form action="/cart" method="post">
+                    <input type="hidden" name="pid" value="{{ rec.ID }}">
+                    <input type="hidden" name="pname" value="{{ rec.Name }}">
+                    <input type="hidden" name="image" value="{{ rec.ImageURL.split('|')[0].strip() }}">
+                    <input type="hidden" name="price" value="{{ rec.Price }}">
+                    <button type="submit" class="cart-button"><i class="fas fa-shopping-cart fa-lg"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<h5 style="margin-left:7%;margin-bottom:30px;">
+    Currently the recommendations are unavailable for this product.
+    You can view our trending products <a href="/index">here</a> or look for other products in our category.
+</h5>
+{% include 'categorybutton.html' %}
 {% endif %}
 
-{% endblock %}
+{% include 'foots.html' %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Redirect to product detail page
+    document.querySelectorAll('.recommend-info').forEach(el => {
+        el.addEventListener('click', () => {
+            window.location.href = el.dataset.href;
+        });
+    });
+
+    // Fix broken images
+    document.querySelectorAll('img[data-alt]').forEach(img => {
+        img.onerror = function() {
+            img.src = img.dataset.alt;
+        };
+    });
+</script>
+</body>
+</html>
